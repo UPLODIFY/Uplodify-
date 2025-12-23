@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Uplodify</title>
+
+<!-- Firebase SDK -->
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+
+<style>
+*{box-sizing:border-box;font-family:Arial,sans-serif}
+body{
+  margin:0;
+  background:#f5f7fb;
+  min-height:100vh;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+}
+.container{
+  width:92%;
+  max-width:380px;
+  background:#fff;
+  padding:22px;
+  border-radius:16px;
+  box-shadow:0 10px 30px rgba(0,0,0,.1);
+}
+h2{text-align:center;margin-bottom:15px}
+input{
+  width:100%;
+  padding:12px;
+  margin-top:10px;
+  border-radius:10px;
+  border:1px solid #ddd;
+}
+button{
+  width:100%;
+  margin-top:14px;
+  padding:12px;
+  border-radius:12px;
+  border:none;
+  background:#4f46e5;
+  color:#fff;
+  font-size:16px;
+  cursor:pointer;
+}
+.secondary{
+  background:#e5e7eb;
+  color:#000;
+}
+.link{
+  text-align:center;
+  margin-top:10px;
+  color:#4f46e5;
+  cursor:pointer;
+}
+.tagline{
+  text-align:center;
+  margin-top:18px;
+  font-size:14px;
+  color:#6b7280;
+}
+.hidden{display:none}
+
+/* APP BUTTONS */
+.app-buttons button{
+  background:#111827;
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+
+<!-- 🔐 LOGIN -->
+<div id="loginBox">
+  <h2>Login</h2>
+  <input type="email" id="loginEmail" placeholder="Email">
+  <input type="password" id="loginPassword" placeholder="Password">
+  <button id="loginBtn">Login</button>
+  <div class="link" onclick="showRegister()">Create account</div>
+  <div class="tagline">Upload smarter. Grow faster.</div>
+</div>
+
+<!-- 📝 REGISTER -->
+<div id="registerBox" class="hidden">
+  <h2>Register</h2>
+  <input type="email" id="regEmail" placeholder="Email">
+  <input type="password" id="regPassword" placeholder="Password">
+  <input type="password" id="regConfirm" placeholder="Confirm Password">
+  <button id="registerBtn">Register</button>
+  <button class="secondary" onclick="showLogin()">Back to Login</button>
+  <div class="tagline">Upload smarter. Grow faster.</div>
+</div>
+
+<!-- 🚀 APP BUTTONS (AFTER LOGIN) -->
+<div id="appBox" class="hidden">
+  <h2>Dashboard</h2>
+
+  <div class="app-buttons">
+    <button onclick="go('home.html')">Home</button>
+    <button onclick="go('upload.html')">Upload</button>
+    <button onclick="go('ai-chat.html')">AI Chat</button>
+    <button onclick="go('group.html')">Group</button>
+    <button onclick="go('profile.html')">Profile</button>
+  </div>
+
+  <button class="secondary" onclick="logout()">Logout</button>
+</div>
+
+</div>
+
+<script>
+/* 🔥 FIREBASE CONFIG */
+const firebaseConfig = {
+  apiKey: "AIzaSyCVRlmw3-PCtGd5s3R-a0fJQsBF1YjPRWI",
+  authDomain: "uplodify-9eb07.firebaseapp.com",
+  databaseURL: "https://uplodify-9eb07-default-rtdb.firebaseio.com",
+  projectId: "uplodify-9eb07",
+  storageBucket: "uplodify-9eb07.firebasestorage.app",
+  messagingSenderId: "158848017856",
+  appId: "1:158848017856:web:94aaaf14320490d52a5425"
+};
+firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth();
+
+/* UI TOGGLE */
+function showRegister(){
+  loginBox.classList.add("hidden");
+  registerBox.classList.remove("hidden");
+}
+function showLogin(){
+  registerBox.classList.add("hidden");
+  loginBox.classList.remove("hidden");
+}
+
+/* LOGIN */
+loginBtn.onclick = () => {
+  auth.signInWithEmailAndPassword(
+    loginEmail.value,
+    loginPassword.value
+  ).then(res=>{
+    if(!res.user.emailVerified){
+      alert("Email verify karo pehle");
+      auth.signOut();
+      return;
+    }
+    loginBox.classList.add("hidden");
+    appBox.classList.remove("hidden");
+  }).catch(e=>alert(e.message));
+};
+
+/* REGISTER */
+registerBtn.onclick = () => {
+  if(regPassword.value !== regConfirm.value){
+    alert("Password match nahi");
+    return;
+  }
+  auth.createUserWithEmailAndPassword(
+    regEmail.value,
+    regPassword.value
+  ).then(()=>{
+    auth.currentUser.sendEmailVerification({
+      url: "https://YOUR_GITHUB_USERNAME.github.io/index.html"
+    });
+    alert("Verification email bhej di gayi hai");
+    showLogin();
+  }).catch(e=>alert(e.message));
+};
+
+/* NAVIGATION */
+function go(page){
+  window.location.href = page;
+}
+
+/* LOGOUT */
+function logout(){
+  auth.signOut().then(()=>{
+    appBox.classList.add("hidden");
+    showLogin();
+  });
+}
+
+/* AUTO LOGIN CHECK */
+auth.onAuthStateChanged(user=>{
+  if(user && user.emailVerified){
+    loginBox.classList.add("hidden");
+    registerBox.classList.add("hidden");
+    appBox.classList.remove("hidden");
+  }
+});
+</script>
+
+</body>
+</html>
