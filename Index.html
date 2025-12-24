@@ -1,197 +1,260 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Uplodify</title>
-
-<!-- Firebase SDK -->
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
-
-<style>
-*{box-sizing:border-box;font-family:Arial,sans-serif}
-body{
-  margin:0;
-  background:#f5f7fb;
-  min-height:100vh;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-}
-.container{
-  width:92%;
-  max-width:380px;
-  background:#fff;
-  padding:22px;
-  border-radius:16px;
-  box-shadow:0 10px 30px rgba(0,0,0,.1);
-}
-h2{text-align:center;margin-bottom:15px}
-input{
-  width:100%;
-  padding:12px;
-  margin-top:10px;
-  border-radius:10px;
-  border:1px solid #ddd;
-}
-button{
-  width:100%;
-  margin-top:14px;
-  padding:12px;
-  border-radius:12px;
-  border:none;
-  background:#4f46e5;
-  color:#fff;
-  font-size:16px;
-  cursor:pointer;
-}
-.secondary{
-  background:#e5e7eb;
-  color:#000;
-}
-.link{
-  text-align:center;
-  margin-top:10px;
-  color:#4f46e5;
-  cursor:pointer;
-}
-.tagline{
-  text-align:center;
-  margin-top:18px;
-  font-size:14px;
-  color:#6b7280;
-}
-.hidden{display:none}
-
-/* APP BUTTONS */
-.app-buttons button{
-  background:#111827;
-}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Uplodify - Upload smarter. Grow faster.</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
+    <!-- LOGIN SECTION (default visible) -->
+    <section id="loginSection" class="section active">
+        <div class="app-header">
+            <h1 class="app-name">Uplodify</h1>
+        </div>
+        
+        <div class="form-container">
+            <h1 id="loginTitle">Welcome back</h1>
+            <p class="tagline">Upload smarter. Grow faster.</p>
+            
+            <form id="loginForm">
+                <div class="form-group">
+                    <input type="email" id="loginEmail" placeholder="Email" required>
+                </div>
+                
+                <div class="form-group">
+                    <input type="password" id="loginPassword" placeholder="Password" required>
+                </div>
+                
+                <button type="button" id="loginBtn" class="btn-primary">Log In</button>
+            </form>
+            
+            <div class="action-links">
+                <button type="button" id="goRegisterBtn" class="btn-text">Create new account</button>
+                <button type="button" id="goForgotBtn" class="btn-text">Forgot password?</button>
+            </div>
+        </div>
+    </section>
 
-<div class="container">
+    <!-- REGISTER SECTION (hidden) -->
+    <section id="registerSection" class="section">
+        <div class="form-container">
+            <h1 id="registerTitle">Create account</h1>
+            <p class="tagline">Upload smarter. Grow faster.</p>
+            
+            <form id="registerForm">
+                <div class="form-group">
+                    <input type="email" id="registerEmail" placeholder="Email" required>
+                </div>
+                
+                <div class="form-group">
+                    <input type="password" id="registerPassword" placeholder="Password" required>
+                </div>
+                
+                <div class="form-group">
+                    <input type="password" id="confirmPassword" placeholder="Confirm Password" required>
+                </div>
+                
+                <button type="button" id="registerBtn" class="btn-primary">Create Account</button>
+            </form>
+            
+            <div class="action-links">
+                <button type="button" id="goLoginBtn" class="btn-text">Already have an account? Log in</button>
+            </div>
+        </div>
+    </section>
 
-<!-- 🔐 LOGIN -->
-<div id="loginBox">
-  <h2>Login</h2>
-  <input type="email" id="loginEmail" placeholder="Email">
-  <input type="password" id="loginPassword" placeholder="Password">
-  <button id="loginBtn">Login</button>
-  <div class="link" onclick="showRegister()">Create account</div>
-  <div class="tagline">Upload smarter. Grow faster.</div>
-</div>
+    <!-- PERMISSION SECTION (hidden) -->
+    <section id="permissionSection" class="section">
+        <div class="form-container">
+            <h1 id="permissionTitle">Permissions Needed</h1>
+            
+            <div class="info-text">
+                <p>To provide the best experience, Uplodify needs the following permissions:</p>
+            </div>
+            
+            <div class="permission-options">
+                <button type="button" id="allowNotificationBtn" class="btn-secondary">Allow Notifications</button>
+                <button type="button" id="allowMediaBtn" class="btn-secondary">Allow Camera & Microphone</button>
+            </div>
+            
+            <button type="button" id="continueBtn" class="btn-primary">Continue</button>
+        </div>
+    </section>
 
-<!-- 📝 REGISTER -->
-<div id="registerBox" class="hidden">
-  <h2>Register</h2>
-  <input type="email" id="regEmail" placeholder="Email">
-  <input type="password" id="regPassword" placeholder="Password">
-  <input type="password" id="regConfirm" placeholder="Confirm Password">
-  <button id="registerBtn">Register</button>
-  <button class="secondary" onclick="showLogin()">Back to Login</button>
-  <div class="tagline">Upload smarter. Grow faster.</div>
-</div>
+    <!-- HOME SECTION (hidden) -->
+    <section id="homeSection" class="section">
+        <div class="app-header">
+            <h1 class="app-name">Uplodify</h1>
+        </div>
+        
+        <div class="stats-container">
+            <h2 class="section-title">Your Stats</h2>
+            
+            <div class="stats-grid">
+                <div class="stat-card" id="totalVideosCard">
+                    <h3 class="stat-title">Total Videos</h3>
+                    <p class="stat-value">0</p>
+                </div>
+                
+                <div class="stat-card" id="lastVideoViewsCard">
+                    <h3 class="stat-title">Last Video Views</h3>
+                    <p class="stat-value">0</p>
+                </div>
+                
+                <div class="stat-card" id="sevenDaysViewsCard">
+                    <h3 class="stat-title">7-Day Views</h3>
+                    <p class="stat-value">0</p>
+                </div>
+                
+                <div class="stat-card" id="totalViewsCard">
+                    <h3 class="stat-title">Total Views</h3>
+                    <p class="stat-value">0</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Bottom Navigation -->
+        <nav class="bottom-nav">
+            <button type="button" id="navHome" class="nav-btn active">
+                <span class="nav-icon">🏠</span>
+                <span class="nav-text">Home</span>
+            </button>
+            
+            <button type="button" id="navUpload" class="nav-btn">
+                <span class="nav-icon">⬆️</span>
+                <span class="nav-text">Upload</span>
+            </button>
+            
+            <button type="button" id="navAI" class="nav-btn">
+                <span class="nav-icon">🤖</span>
+                <span class="nav-text">AI</span>
+            </button>
+            
+            <button type="button" id="navGroup" class="nav-btn">
+                <span class="nav-icon">👥</span>
+                <span class="nav-text">Group</span>
+            </button>
+            
+            <button type="button" id="navProfile" class="nav-btn">
+                <span class="nav-icon">👤</span>
+                <span class="nav-text">Profile</span>
+            </button>
+        </nav>
+    </section>
 
-<!-- 🚀 APP BUTTONS (AFTER LOGIN) -->
-<div id="appBox" class="hidden">
-  <h2>Dashboard</h2>
+    <!-- UPLOAD SECTION (hidden) -->
+    <section id="uploadSection" class="section">
+        <div class="section-header">
+            <h1 class="section-title">Upload Video</h1>
+            <button type="button" id="backHomeFromUpload" class="btn-back">← Back</button>
+        </div>
+        
+        <div class="upload-container">
+            <div class="form-group">
+                <label for="videoInput" class="file-label">Choose Video File</label>
+                <input type="file" id="videoInput" accept="video/*" class="file-input">
+            </div>
+            
+            <div class="form-group">
+                <label for="platformSelect" class="select-label">Select Platform</label>
+                <select id="platformSelect" class="select-input">
+                    <option value="youtube">YouTube</option>
+                    <option value="tiktok">TikTok</option>
+                    <option value="instagram">Instagram</option>
+                    <option value="facebook">Facebook</option>
+                </select>
+            </div>
+            
+            <button type="button" id="generateCaptionBtn" class="btn-secondary">Generate AI Caption</button>
+            
+            <div class="form-group">
+                <label for="captionBox" class="textarea-label">Video Caption</label>
+                <textarea id="captionBox" placeholder="Write or paste your video caption here..." rows="6"></textarea>
+            </div>
+            
+            <button type="button" id="openUploadPageBtn" class="btn-primary">Open Upload Page</button>
+        </div>
+    </section>
 
-  <div class="app-buttons">
-    <button onclick="go('home.html')">Home</button>
-    <button onclick="go('upload.html')">Upload</button>
-    <button onclick="go('ai-chat.html')">AI Chat</button>
-    <button onclick="go('group.html')">Group</button>
-    <button onclick="go('profile.html')">Profile</button>
-  </div>
+    <!-- AI SECTION (hidden) -->
+    <section id="aiSection" class="section">
+        <div class="section-header">
+            <h1 class="section-title">AI Assistant</h1>
+            <button type="button" id="backHomeFromAI" class="btn-back">← Back</button>
+        </div>
+        
+        <div class="ai-container">
+            <div class="info-text">
+                <p>Ask our AI assistant for help with video ideas, captions, hashtags, or optimization tips.</p>
+            </div>
+            
+            <div class="form-group">
+                <input type="text" id="aiUserInput" placeholder="Ask AI for help with your content...">
+            </div>
+            
+            <button type="button" id="sendAiMsgBtn" class="btn-primary">Ask AI</button>
+            
+            <div class="ai-response-container">
+                <div id="aiResponseBox" class="ai-response-box">
+                    <p>AI responses will appear here...</p>
+                </div>
+            </div>
+        </div>
+    </section>
 
-  <button class="secondary" onclick="logout()">Logout</button>
-</div>
+    <!-- GROUP SECTION (hidden) -->
+    <section id="groupSection" class="section">
+        <div class="section-header">
+            <h1 class="section-title">Group</h1>
+            <button type="button" id="backHomeFromGroup" class="btn-back">← Back</button>
+        </div>
+        
+        <div class="group-container">
+            <div id="groupWarning" class="warning-box">
+                <p><strong>Important Rule:</strong> You must watch group videos regularly. If you don't, your videos will not be shared.</p>
+                <button type="button" id="acceptGroupRuleBtn" class="btn-secondary">I Understand</button>
+            </div>
+            
+            <h2 class="section-subtitle">Group Videos</h2>
+            <div id="groupVideoList" class="video-list">
+                <!-- Video items will be dynamically added here -->
+                <div class="video-item">
+                    <p class="video-title">Group video 1</p>
+                    <button type="button" class="btn-watch">Watch on YouTube</button>
+                </div>
+            </div>
+        </div>
+    </section>
 
-</div>
+    <!-- PROFILE SECTION (hidden) -->
+    <section id="profileSection" class="section">
+        <div class="section-header">
+            <h1 class="section-title">Profile</h1>
+        </div>
+        
+        <div class="profile-container">
+            <div class="profile-info">
+                <div class="profile-avatar">
+                    <div class="avatar-placeholder">U</div>
+                </div>
+                <h2 id="profileUserName" class="profile-name">User Name</h2>
+                <p id="profileUserEmail" class="profile-email">user@example.com</p>
+            </div>
+            
+            <div class="profile-actions">
+                <button type="button" id="editProfileBtn" class="profile-btn">Edit Profile</button>
+                <button type="button" id="connectionsBtn" class="profile-btn">Connections</button>
+                <button type="button" id="uploadHistoryBtn" class="profile-btn">Upload History</button>
+                <button type="button" id="privacyBtn" class="profile-btn">Privacy Settings</button>
+                <button type="button" id="logoutBtn" class="profile-btn logout-btn">Log Out</button>
+                <button type="button" id="deleteAccountBtn" class="profile-btn delete-btn">Delete Account</button>
+            </div>
+        </div>
+    </section>
 
-<script>
-/* 🔥 FIREBASE CONFIG */
-const firebaseConfig = {
-  apiKey: "AIzaSyCVRlmw3-PCtGd5s3R-a0fJQsBF1YjPRWI",
-  authDomain: "uplodify-9eb07.firebaseapp.com",
-  databaseURL: "https://uplodify-9eb07-default-rtdb.firebaseio.com",
-  projectId: "uplodify-9eb07",
-  storageBucket: "uplodify-9eb07.firebasestorage.app",
-  messagingSenderId: "158848017856",
-  appId: "1:158848017856:web:94aaaf14320490d52a5425"
-};
-firebase.initializeApp(firebaseConfig);
-const auth = firebase.auth();
-
-/* UI TOGGLE */
-function showRegister(){
-  loginBox.classList.add("hidden");
-  registerBox.classList.remove("hidden");
-}
-function showLogin(){
-  registerBox.classList.add("hidden");
-  loginBox.classList.remove("hidden");
-}
-
-/* LOGIN */
-loginBtn.onclick = () => {
-  auth.signInWithEmailAndPassword(
-    loginEmail.value,
-    loginPassword.value
-  ).then(res=>{
-    if(!res.user.emailVerified){
-      alert("Email verify karo pehle");
-      auth.signOut();
-      return;
-    }
-    loginBox.classList.add("hidden");
-    appBox.classList.remove("hidden");
-  }).catch(e=>alert(e.message));
-};
-
-/* REGISTER */
-registerBtn.onclick = () => {
-  if(regPassword.value !== regConfirm.value){
-    alert("Password match nahi");
-    return;
-  }
-  auth.createUserWithEmailAndPassword(
-    regEmail.value,
-    regPassword.value
-  ).then(()=>{
-    auth.currentUser.sendEmailVerification({
-      url: "https://YOUR_GITHUB_USERNAME.github.io/index.html"
-    });
-    alert("Verification email bhej di gayi hai");
-    showLogin();
-  }).catch(e=>alert(e.message));
-};
-
-/* NAVIGATION */
-function go(page){
-  window.location.href = page;
-}
-
-/* LOGOUT */
-function logout(){
-  auth.signOut().then(()=>{
-    appBox.classList.add("hidden");
-    showLogin();
-  });
-}
-
-/* AUTO LOGIN CHECK */
-auth.onAuthStateChanged(user=>{
-  if(user && user.emailVerified){
-    loginBox.classList.add("hidden");
-    registerBox.classList.add("hidden");
-    appBox.classList.remove("hidden");
-  }
-});
-</script>
-
+    <!-- External scripts -->
+    <script src="firebase.js"></script>
+    <script src="app.js"></script>
 </body>
 </html>
